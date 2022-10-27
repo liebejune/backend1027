@@ -1,7 +1,7 @@
 FROM python:3.9
 
 WORKDIR /apps
-ADD ./requirements.txt /apps/
+ADD requirements.txt /apps/
 RUN pip install -r /apps/requirements.txt
 ADD *.py /apps/
 EXPOSE 8000
