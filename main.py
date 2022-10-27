@@ -1,16 +1,33 @@
-# This is a sample Python script.
-
-# Press Shift+F10 to execute it or replace it with your code.
-# Press Double Shift to search everywhere for classes, files, tool windows, actions, and settings.
-
-
-def print_hi(name):
-    # Use a breakpoint in the code line below to debug your script.
-    print(f'Hi, {name}')  # Press Ctrl+F8 to toggle the breakpoint.
+from flask import Flask
+from flask_cors import CORS
+import pymysql
+import os
 
 
-# Press the green button in the gutter to run the script.
-if __name__ == '__main__':
-    print_hi('PyCharm')
+app = Flask(__name__)
+cors = CORS(app, resources={r"/*": {"origins": "*"}})
 
-# See PyCharm help at https://www.jetbrains.com/help/pycharm/
+@app.route("/hello")
+def hello():
+    host = os.environ['DB_HOST']
+    user = os.environ['DB_USER']
+    password = os.environ['MYSQL_ROOT_PASSWORD']
+    db = os.environ['DB_NAME']
+    conn = pymysql.connect(host=host, user=user, db=db,
+                           password=password, charset='utf8')
+    curs = conn.cursor()
+    sql = "select * from student";
+    curs.execute(sql)
+    rows = curs.fetchall()
+    print(rows)
+    conn.commit()
+    conn.close()
+
+    result = {"code": 200, "message": rows}
+    return result
+
+
+
+
+if __name__ == "__main__":
+    app.run(host='0.0.0.0', port=80)
